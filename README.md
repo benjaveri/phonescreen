@@ -1,5 +1,5 @@
- S I M P L E  P H O N E  S C R E E N E R
-=========================================
+SIMPLE PHONE SCREENER
+=====================
 
 This is a simple set of scripts that lets you whitelist and blacklist callers using called-id. It has only been tested
 in the US but I think it is trivial to adapt to any other country. All you need is a caller-id & fax capable modem.
@@ -11,9 +11,11 @@ I am using a Zoom 3095 mini USB modem. https://smile.amazon.com/gp/product/B001F
 Mine is connected to a linux box in the basement. The phone line is run in parallel with the rest of the phones in my
 home.
 
-I am open to pull request from the community to make this system and scripts even better. It would be really fun to
-connect to the government's do-not-call complaint department, and also to help "spamhaus"-like services with white- and
-black-list information, as well as retrieving assistance evaluating the likelihood of spam calls and acting on it.
+You can see some pictures of my setup here: https://imgur.com/a/OFWS9
+
+I am open to pull requests to make the system better. It would be really fun to connect to the government's do-not-call
+complaint department, and also to help "spamhaus"-like services with white- and black-list information. Also cool is to 
+retrieve assistance evaluating the likelihood of spam calls and acting on it.
 
 
 
@@ -24,40 +26,44 @@ ALGORITHM
 When an incoming call is detected, the code identifies the caller by their number according to the caller ID information
 that is sent after the first ring.
 
-If the number is whitelisted, it will ring though. This will also allow your answering machine to take a message.
+If the number is whitelisted, it will ring though. This will also allow you to pick up, or your answering machine to 
+take a message.
 
 If the number is blacklisted, the modem will answer as a fax machine, discouraging future calls. Many robo-diallers will
-remove your number from their records if they determine it is attende by robot kin.
+remove your number from their records if they determine it is attended by their robot kin. They dont have much to say to
+each other.
 
-The the number isn't on any of the lists, it will do the following:
-  1. If this number has never been seen before, or it has been more than one minute since they called last, the modem
+If the number isn't on any of the above lists, it will do the following:
+  1. If it has never been seen before, or it has been more than one minute since they called since, the modem
      will pick up and hang up immediately. To humans this would seem like an oddity and they will likely dial again.
-     The robo-dialling overlords however will usually move on.
+     The robo-dialling overlords however will usually move on. Not a very social kind are they?
   2. If the person called within the last minute, it will
-            a) whitelist their number, and
-            b) let the call ring through
+            a) let the call ring through,
+            b) whitelist their number,
+            c) and thus subsequent calls will just ring through as well.
 
 I have provided two scripts that helps you manage the white and black lists. You have to run them as root, but only
 because systemd runs as root and elevates permissions of the number.sqlite database file.
 
-White list a number (also removes it from blacklist if it was there)
-$ ./whitelist.py 9995551212
+Show history of calls: <br/>
+`$ ./history.py`
 
-Black list a number (also removes it from whitelist if it was there)
-$ ./blacklist.py 9995551212
+White list a number (also removes it from blacklist if it was there) <br/>
+`$ ./whitelist.py 9995551212`
 
-List all numbers on white list
-$ ./whitelist.py
+Black list a number (also removes it from whitelist if it was there) <br/>
+`$ ./blacklist.py 9995551212`
 
-List all numbers on black list
-$ ./blacklist.py
+List all numbers on white list <br/>
+`$ ./whitelist.py`
 
-Removes a number from both lists
-$ ./whitelist.py remove 6505551212
- - or -
-$ ./blacklist.py remove 6505551212
+List all numbers on black list <br/>
+`$ ./blacklist.py`
 
-Black list a nume
+Removes a number from both lists <br/>
+`$ ./whitelist.py remove 6505551212` <br/>
+ or <br/>
+`$ ./blacklist.py remove 6505551212`
 
 
 
