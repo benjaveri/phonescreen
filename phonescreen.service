@@ -1,0 +1,55 @@
+# BSD 3-Clause License
+#
+# Copyright (c) 2017 by Ben de Waal, All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+############# READ THIS ##############################################################################################
+#
+# Ubuntu 16 or later
+#
+# 0. replace all absolute paths below to where your scripts are located
+# 1. make sure you localte your modem's serial port. mine is on /dev/ttyACM0
+# 2. modify below to reflect where your modem is listening
+# 3. cp this file to /lib/systemd/system/phonescreen.service and then do
+# 4.  sudo systemctl enable phonescreen.service
+# 5.  sudo systemctl start phonescreen.service
+#
+[Unit]
+Description=Simple Phone Call Screener
+After=multi-user.target
+
+[Service]
+Type=simple
+
+# FIX PATH BELOW TO REFLECT YOUR INSTALLATION LOCATION
+WorkingDirectory=/home/ben/depot/phonescreen/
+
+# FIX PATH AND SERIAL PORT BELOW
+ExecStart=/usr/bin/python /home/ben/depot/phonescreen/main.py /home/ben/depot/phonescreen /dev/ttyACM0
+
+[Install]
+WantedBy=multi-user.target
