@@ -110,6 +110,10 @@ class Core:
                         else:
                             print "Soft rejecting unknown %s (%s)" % (number,name)
                             self.modem.reject_call(False)
+                            # check if we have rejected this call 4 times before - if so, promote to black list
+                            for row in conn.execute("SELECT COUNT(*) FROM history WHERE number=?",(number,)):
+                                if int(row[0]) >= 4:
+                                    conn.execute("INSERT OR REPLACE INTO blacklist(NUMBER) VALUES (?)",(number,))
 
                     # update call history
                     conn.execute("INSERT INTO history(epoch,number,name) VALUES (?,?,?)",(now,number,name))

@@ -41,6 +41,7 @@ If the number isn't on any of the above lists, it will do the following:
             a) let the call ring through,
             b) whitelist their number,
             c) and thus subsequent calls will just ring through as well.
+  3. When we have soft rejected a number for the fifth time, we demote it to the black list.
 
 I have provided two scripts that helps you manage the white and black lists. You have to run them as root, but only
 because systemd runs as root and elevates permissions of the number.sqlite database file.

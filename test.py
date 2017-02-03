@@ -41,17 +41,22 @@ class FakeModem(Modem):
         self.org = time.time()
         self.pgm = [
             # blacklist test
-            { "at": 1.0, "from":"408--black", "expect":False },
+            { "at": 1.0, "from":"408--black", "expect":"hard-reject" },
             # whitelist test
-            { "at": 1.5, "from":"408--white", "expect":True },
+            { "at": 1.5, "from":"408--white", "expect":"accept" },
             # immediate redial test
-            { "at": 3.0, "from":"1234567890", "expect":False },
-            { "at": 3.1, "from":"1234567890", "expect":True },
+            { "at": 3.0, "from":"1234567890", "expect":"soft-reject" },
+            { "at": 3.1, "from":"1234567890", "expect":"accept" },
             # non-immediate redial test
-            { "at": 5.0, "from":"1234567891", "expect":False },
-            { "at":10.0, "from":"1234567891", "expect":False },
+            { "at": 5.0, "from":"1234567891", "expect":"soft-reject" },
+            { "at":10.0, "from":"1234567891", "expect":"soft-reject" },
+            # blacklist promotion
+            {"at": 15.0, "from": "1234567891", "expect": "soft-reject"},
+            {"at": 20.0, "from": "1234567891", "expect": "soft-reject"},
+            {"at": 25.0, "from": "1234567891", "expect": "soft-reject"},
+            {"at": 30.0, "from": "1234567891", "expect": "hard-reject"},
             # done
-            {"at": 15.0, "from": "~" }
+            {"at": 35.0, "from": "~" }
         ]
 
     def emit(self,s):
@@ -76,7 +81,7 @@ class FakeModem(Modem):
                     raise CompletedException()
 
                 # play out program
-                self.accept = self.pgm[0]["expect"]
+                self.expected = self.pgm[0]["expect"]
                 self.buf.append("NMBR = %s" % self.pgm[0]["from"])
                 self.buf.append("NAME = test")
                 self.pgm = self.pgm[1:]
@@ -87,10 +92,10 @@ class FakeModem(Modem):
         return ""
 
     def accept_call(self):
-        assert self.accept
+        assert self.expected == "accept"
 
     def reject_call(self,hard):
-        assert not self.accept
+        assert self.expected == ("hard-reject" if hard else "soft-reject")
 
 db = Database(DBPATH)
 modem = FakeModem()
@@ -105,7 +110,12 @@ except CompletedException as e:
 except Exception:
     raise
 
+print "WHITELIST"
 with db as conn:
-  for row in conn.execute("SELECT * FROM WHITELIST"):
+  for row in conn.execute("SELECT * FROM whitelist"):
     print row
-    
+
+print "BLACKLIST"
+with db as conn:
+  for row in conn.execute("SELECT * FROM blacklist"):
+    print row
