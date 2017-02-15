@@ -50,5 +50,5 @@ if NUMBER:
 
 print "%s:" % PRIMARY
 with db as conn:
-    for row in conn.execute("SELECT p.number,h.name FROM %s AS p JOIN history AS h ON p.number=h.number" % PRIMARY):
+    for row in conn.execute("SELECT DISTINCT p.number,h.name FROM %s AS p LEFT JOIN history AS h ON p.number=h.number" % PRIMARY):
         print " %s %s" % (row[0], row[1])
