@@ -33,6 +33,12 @@ from interfaces import *
 
 db = Database("numbers.sqlite")
 with db as conn:
+    print "HISTOGRAM"
+    for row in conn.execute("SELECT number,name,COUNT(number) FROM history GROUP BY number ORDER BY COUNT(number)"):
+        print "%s %s %s" % (row[0],row[1],row[2])
+    print
+
+    print "HISTORY"
     for row in conn.execute("SELECT epoch,number,name FROM history"):
         print "%s %s %s" % (datetime.datetime.fromtimestamp(int(row[0])).strftime('%Y-%m-%d %H:%M:%S'),row[1],row[2])
         
