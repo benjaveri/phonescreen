@@ -2,3 +2,5 @@
 venv/
 *.sqlite
 *.pyc
+*.err
+*.out

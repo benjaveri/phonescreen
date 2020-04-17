@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>phonescreen</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>UserName</key>
+    <string>ben</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/python</string>
+        <string>main.py</string>
+        <string>.</string>
+        <string>/dev/tty.usbmodem246802461</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/ben/depot/phonescreen</string>
+    <key>Debug</key>
+    <true/>
+    <key>StandardErrorPath</key>
+    <string>/Users/ben/depot/phonescreen/phonescreen.err</string>
+    <key>StandardOutPath</key>
+    <string>/Users/ben/depot/phonescreen/phonescreen.out</string>
+</dict>
+</plist>
