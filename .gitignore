@@ -1,6 +1,7 @@
 .idea/
 venv/
 *.sqlite
+*.backup
 *.pyc
 *.err
 *.out

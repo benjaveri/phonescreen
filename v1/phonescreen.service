@@ -1,0 +1,30 @@
+# BSD 3-Clause License -> see /LICENSE
+# Copyright (c) 2017-2020 by Ben de Waal, All rights reserved.
+#
+
+############# READ THIS ##############################################################################################
+#
+# Ubuntu 16 or later
+#
+# 0. replace all absolute paths below to where your scripts are located
+# 1. make sure you localte your modem's serial port. mine is on /dev/ttyACM0
+# 2. modify below to reflect where your modem is listening
+# 3. cp this file to /lib/systemd/system/phonescreen.service and then do
+# 4.  sudo systemctl enable phonescreen.service
+# 5.  sudo systemctl start phonescreen.service
+#
+[Unit]
+Description=Simple Phone Call Screener
+After=multi-user.target
+
+[Service]
+Type=simple
+
+# FIX PATH BELOW TO REFLECT YOUR INSTALLATION LOCATION
+WorkingDirectory=/home/ben/depot/phonescreen/
+
+# FIX PATH AND SERIAL PORT BELOW
+ExecStart=/usr/bin/python /home/ben/depot/phonescreen/main.py /home/ben/depot/phonescreen /dev/ttyACM0
+
+[Install]
+WantedBy=multi-user.target
