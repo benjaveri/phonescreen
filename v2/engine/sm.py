@@ -62,6 +62,9 @@ class StateMachine:
                     if int(row[0]) >= 4:
                         self.db.log("Blacklisting on forth call %s (%s)" % (num, name))
                         conn.execute("INSERT OR REPLACE INTO blacklist(NUMBER) VALUES (?)", (num,))
+                        self.db.log_state(LS_BLOCK)
+                        self.modem.answer_as_fax(self.fax_timeout)
+                        self.db.log_state(LS_IDLE)
                         return
 
             # enter p-mode
