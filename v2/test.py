@@ -29,10 +29,11 @@ prog = [
     {"at":  7.0, "from": "1234567892", "expect": "pulse"},
     {"at":  8.5, "from": "1234567892", "expect": "pulse"},
     {"at": 10.0, "from": "1234567892", "expect": "pulse"},
-    {"at": 11.5, "from": "1234567892", "expect": "block"},
-    {"at": 12.0, "from": "1234567892", "expect": "block"},
+    {"at": 11.5, "from": "1234567892", "expect": "pulse"},
+    {"at": 13.0, "from": "1234567892", "expect": "block"},
+    {"at": 14.5, "from": "1234567892", "expect": "block"},
     # done
-    {"at": 12.5, "from": None }
+    {"at": 15.0, "from": None }
 ]
 
 # database & migrations

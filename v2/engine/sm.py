@@ -56,19 +56,25 @@ class StateMachine:
             self.modem.answer_as_fax(self.fax_timeout)
             self.db.log_state(LS_IDLE)
         else:
-            # check this number against history, if we've seen it for thr forth time, blacklist it now
+            # check this number against history, if we've seen it for a number of times, blacklist it now
+            found = False
             with self.db as conn:
                 for row in conn.execute("SELECT COUNT(*) FROM history WHERE number=?", (num,)):
-                    if int(row[0]) >= 4:
-                        self.db.log("Blacklisting on forth call %s (%s)" % (num, name))
-                        conn.execute("INSERT OR REPLACE INTO blacklist(NUMBER) VALUES (?)", (num,))
-                        self.db.log_state(LS_BLOCK)
-                        self.modem.answer_as_fax(self.fax_timeout)
-                        self.db.log_state(LS_IDLE)
-                        return
+                    print(row[0])
+                    if int(row[0]) >= 5:
+                        found = True
+                        break
 
-            # enter p-mode
-            self.pmode(name, num)
+            if found:
+                self.db.log("Blacklisting on fifth call %s (%s)" % (num, name))
+                with self.db as conn:
+                    conn.execute("INSERT OR REPLACE INTO blacklist(number) VALUES (?)", (num,))
+                self.db.log_state(LS_BLOCK)
+                self.modem.answer_as_fax(self.fax_timeout)
+                self.db.log_state(LS_IDLE)
+            else:
+                # enter p-mode
+                self.pmode(name, num)
 
     #
     # promiscuous mode (Turing test)
