@@ -75,10 +75,18 @@ class RealModem(Modem):
         while len(self._readline()): pass
 
     def _health_check(self):
-        self._emit("ATE1")  # echo on
+        print("hc")
+        self.buf += self._readline()
         self._emit("ATE0")  # echo off
-        time.sleep(.1)
-        return self._readline() == ("OK" + NEWLINE)
+        buf = ""
+        tmo = time.time() + 5
+        while time.time() < tmo:
+            buf += self._readline()
+            if "OK" in buf: 
+                self.buf += buf
+                return True
+        self.buf += buf
+        return False
 
     def ring_through(self):
         pass

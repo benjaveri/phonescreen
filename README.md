@@ -10,3 +10,8 @@ There are two versions:
    have used it for many years, non-stop.
 1. v2 is a python 3 port of v1 with minor improvements. It includes a live monitor to show stats and actions
    in real time.
+
+
+python3 -m serial.tools.list_ports
+python3 -m serial.tools.miniterm    -- Ctrl+] to exit
+
