@@ -5,7 +5,7 @@ import sqlite3, time
 
 # log states
 LS_IDLE  = "idle"
-LS_BLOCK = "blacklist"
+LS_BLOCK = "blocklist"
 LS_PMODE = "pmode"
 LS_HALT  = "halt"
 
@@ -37,10 +37,10 @@ class Database:
             # schema 0 (from v1)
             #
             conn.execute("CREATE TABLE IF NOT EXISTS props (id INTEGER PRIMARY KEY ASC,key TEXT UNIQUE,value TEXT)")
-            conn.execute("CREATE TABLE IF NOT EXISTS whitelist (id INTEGER PRIMARY KEY ASC,number TEXT UNIQUE)")
-            conn.execute("CREATE INDEX IF NOT EXISTS whitelistNumberIndex ON whitelist (number ASC)")
-            conn.execute("CREATE TABLE IF NOT EXISTS blacklist (id INTEGER PRIMARY KEY ASC,number TEXT UNIQUE)")
-            conn.execute("CREATE INDEX IF NOT EXISTS blacklistNumberIndex ON blacklist (number ASC)")
+            conn.execute("CREATE TABLE IF NOT EXISTS allowlist (id INTEGER PRIMARY KEY ASC,number TEXT UNIQUE)")
+            conn.execute("CREATE INDEX IF NOT EXISTS allowlistNumberIndex ON allowlist (number ASC)")
+            conn.execute("CREATE TABLE IF NOT EXISTS blocklist (id INTEGER PRIMARY KEY ASC,number TEXT UNIQUE)")
+            conn.execute("CREATE INDEX IF NOT EXISTS blocklistNumberIndex ON blocklist (number ASC)")
             conn.execute("CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY ASC,epoch INTEGER,number TEXT,name TEXT)")
             conn.execute("CREATE INDEX IF NOT EXISTS historyEpochIndex ON history (epoch ASC)")
 

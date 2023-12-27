@@ -4,18 +4,18 @@
 import sys, re
 from engine.database import Database
 
-# blacklist.py [del|delete|remove] [number]
+# blocklist.py [del|delete|remove] [number]
 
 def clean(s):
     return re.sub(' +', ' ', s.strip())
 
 try:
-    PRIMARY = "blacklist"
-    SECONDARY = "whitelist"
+    PRIMARY = "blocklist"
+    SECONDARY = "allowlist"
     REMOVE = (len(sys.argv) > 2) and sys.argv[1] in ["del","delete","remove"]
     NUMBER = (sys.argv[2] if REMOVE else sys.argv[1]) if len(sys.argv) > 1 else None
 except:
-    print("Usage: python3 blacklist.py [del|delete|remove <number>]")
+    print("Usage: python3 blocklist.py [del|delete|remove <number>]")
     sys.exit(1)
 
 db = Database("numbers.sqlite")

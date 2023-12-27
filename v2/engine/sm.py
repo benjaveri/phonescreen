@@ -35,28 +35,28 @@ class StateMachine:
 
     def answer(self, name, num):
         with self.db as conn:
-            # if whitelisted, mark and handle outside of transaction
+            # if allowlisted, mark and handle outside of transaction
             allow = False
-            for row in conn.execute("SELECT * FROM whitelist WHERE number=?", (num,)):
+            for row in conn.execute("SELECT * FROM allowlist WHERE number=?", (num,)):
                 allow = True
 
-            # if blacklisted, mark and handle outside of transaction
+            # if blocklisted, mark and handle outside of transaction
             block = False
-            for row in conn.execute("SELECT * FROM blacklist WHERE number=?", (num,)):
+            for row in conn.execute("SELECT * FROM blocklist WHERE number=?", (num,)):
                 block = True
 
         if allow:
             # ring through
-            self.db.log("Allowing whitelisted number %s (%s)" % (num, name))
+            self.db.log("Allowing allowlisted number %s (%s)" % (num, name))
             self.modem.ring_through()
         elif block:
             # answer as fax
-            self.db.log("Blocking blacklisted number %s (%s)" % (num, name))
+            self.db.log("Blocking blocklisted number %s (%s)" % (num, name))
             self.db.log_state(LS_BLOCK)
             self.modem.answer_as_fax(self.fax_timeout)
             self.db.log_state(LS_IDLE)
         else:
-            # check this number against history, if we've seen it for a number of times, blacklist it now
+            # check this number against history, if we've seen it for a number of times, blocklist it now
             found = False
             with self.db as conn:
                 for row in conn.execute("SELECT COUNT(*) FROM history WHERE number=?", (num,)):
@@ -66,9 +66,9 @@ class StateMachine:
                         break
 
             if found:
-                self.db.log("Blacklisting on fifth call %s (%s)" % (num, name))
+                self.db.log("blocklisting on fifth call %s (%s)" % (num, name))
                 with self.db as conn:
-                    conn.execute("INSERT OR REPLACE INTO blacklist(number) VALUES (?)", (num,))
+                    conn.execute("INSERT OR REPLACE INTO blocklist(number) VALUES (?)", (num,))
                 self.db.log_state(LS_BLOCK)
                 self.modem.answer_as_fax(self.fax_timeout)
                 self.db.log_state(LS_IDLE)
@@ -93,10 +93,10 @@ class StateMachine:
             if len(ls) > 0:
                 name2, num2 = ls
                 if num == num2:
-                    # this is a redial from the same number, whitelist it and ring through
-                    self.db.log("Whitelisting and ringing through %s (%s)" % (num, name))
+                    # this is a redial from the same number, allowlist it and ring through
+                    self.db.log("allowlisting and ringing through %s (%s)" % (num, name))
                     with self.db as conn:
-                        conn.execute("INSERT INTO whitelist(number) VALUES (?)", (num,))
+                        conn.execute("INSERT INTO allowlist(number) VALUES (?)", (num,))
                     # ring through
                     self.modem.ring_through()
                     # done

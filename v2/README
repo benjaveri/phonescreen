@@ -2,12 +2,14 @@ notes:
 - v2 will accept v1 database and extend it to v2 schema
 - not meant to be used by v1 again, so back it up first
 
+pip install serial
+
 python3 test.py        - run unit test, should always pass.
 python3 run.py <modem> - run with real modem; database in cwd
 python3 monitor.py     - runs a curses real time monitor
 python3 log.py         - prints logs
-python3 whitelist.py   - prints or whitelists a number
-python3 blakclist.py   - prints or blacklists a number
+python3 allowlist.py   - prints or allowlists a number
+python3 blocklist.py   - prints or blocklists a number
 python3 history.py     - prints call history
 
 my setup:
@@ -27,13 +29,13 @@ high level design
                 |          |                                             |TIMEOUT       |         |
                 |          |                                             |              |         |
                 |          |                                   +---------|--------+     |         |
-                |          |                            BLACK  |                  |     |         |
+                |          |                            BLOCK  |                  |     |         |
                 |          |                        /--------->|   BLOCK AS FAX   |     |         |
                 |          |                        |          |                  |     |         |
                 |          |                        |          +------------------+     |         |
                 |          |                        |                                   |         |
                 |    +-----v----+        +------------+        +------------------+     |         |
-                |    |          |  RING  |            | WHITE  |                  |     |         |
+                |    |          |  RING  |            | ALLOW  |                  |     |         |
                 |    |   IDLE   |------->|   ANSWER   |------->|   RING THROUGH   |-----/         |
                 |    |          |        |            |        |                  |               |
                 |    +-----^----+        +------------+        +------------------+               |
@@ -52,7 +54,7 @@ high level design
                 |                             |                          v RING                   |
                 |                             |                +------------------+               |
                 |                             |                |                  |               |
-                |                             \----------------|    WHITELIST     |               |
+                |                             \----------------|    ALLOWLIST     |               |
                 |                                              |     on match     |               |
                 |                                              +------------------+               |
                 |                                                                                 |
@@ -64,9 +66,9 @@ state machine details
 ANSWER
 - get ring info from listener
 - select next state
-  - blacklist -> BLOCK
-  - whitelist -> RING THROUGH
-  - new number -> if 4th call over time, auto blacklist, else enter P-MODE below
+  - blocklist -> BLOCK
+  - allowlist -> RING THROUGH
+  - new number -> if 4th call over time, auto blocklist, else enter P-MODE below
 
 RING THROUGH
 - do nothing
@@ -83,6 +85,6 @@ PULSE
 P-MODE
 - PULSE
 - during next minute, if ring
-  - if number same -> auto whitelist, RING THROUGH
+  - if number same -> auto allowlist, RING THROUGH
   - else go to ANSWER
 - if no calls and minute is up, go to IDLE

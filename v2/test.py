@@ -12,10 +12,10 @@ from engine.sm import StateMachine
 # modem program
 REDIAL_WINDOW = 1
 prog = [
-    # blacklist test
-    { "at": 1.0, "from":"408--black", "expect":"block" },
-    # whitelist test
-    { "at": 1.5, "from":"408--white", "expect":"accept" },
+    # blocklist test
+    { "at": 1.0, "from":"408--block", "expect":"block" },
+    # allowlist test
+    { "at": 1.5, "from":"408--allow", "expect":"accept" },
     # immediate redial test 1
     { "at": 2.0, "from":"1234567890", "expect":"pulse" },
     { "at": 2.1, "from":"1234567890", "expect":"accept" },
@@ -25,7 +25,7 @@ prog = [
     # non-immediate redial test
     { "at": 4.0, "from":"1234567891", "expect":"pulse" },
     { "at": 6.0, "from":"1234567891", "expect":"pulse" },
-    # auto blacklist promotion
+    # auto blocklist promotion
     {"at":  7.0, "from": "1234567892", "expect": "pulse"},
     {"at":  8.5, "from": "1234567892", "expect": "pulse"},
     {"at": 10.0, "from": "1234567892", "expect": "pulse"},
@@ -40,8 +40,8 @@ prog = [
 db = Database(":memory:")
 db.setup()
 with db as conn:
-    conn.execute("INSERT INTO whitelist(number) VALUES (?)",("408--white",))
-    conn.execute("INSERT INTO blacklist(number) VALUES (?)",("408--black",))
+    conn.execute("INSERT INTO allowlist(number) VALUES (?)",("408--allow",))
+    conn.execute("INSERT INTO blocklist(number) VALUES (?)",("408--block",))
 
 # we use a fake modem
 modem = MockModem(prog)
@@ -58,19 +58,19 @@ except Exception:
     raise
 
 
-l = [ "408--white", "1234567890" ]
+l = [ "408--allow", "1234567890" ]
 c = len(l)
 with db as conn:
-    for row in conn.execute("SELECT number FROM whitelist"):
+    for row in conn.execute("SELECT number FROM allowlist"):
         l.remove(row[0])
         c -= 1
 assert c == 0
 assert len(l) == 0
 
-l = [ "408--black", "1234567892" ]
+l = [ "408--block", "1234567892" ]
 c = len(l)
 with db as conn:
-    for row in conn.execute("SELECT number FROM blacklist"):
+    for row in conn.execute("SELECT number FROM blocklist"):
         l.remove(row[0])
         c -= 1
 assert c == 0
